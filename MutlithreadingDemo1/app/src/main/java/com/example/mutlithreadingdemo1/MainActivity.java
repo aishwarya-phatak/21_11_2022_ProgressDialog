@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
             for(String fileUrl :  fileUrls){
                 for(int i = 0; i<100; i++){
+                Log.e("tag","downloading" + fileUrl + i + "%");
+
                     try{
                         Thread.sleep(50);
                     } catch (InterruptedException e){
@@ -48,10 +51,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Integer [] progress = new Integer[1];
                     progress[0] = i;
-                    publishProgress();
+                    publishProgress(i);
+                    progressDialog.setProgress(i);
                 }
             }
-            return null;
+            return 100.00F;
         }
 
         @Override
@@ -64,10 +68,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Float aFloat) {
-            super.onPostExecute(aFloat);
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            btnDownload.setText("Progress " + values[0] + "%");
+        }
 
-
+        @Override
+        protected void onPostExecute(Float result) {
+            super.onPostExecute(result);
+            btnDownload.setText("Float" + result);
         }
     }
 }
